@@ -12,7 +12,8 @@ class ProjectTypeController extends Controller
      */
     public function index()
     {
-        //
+        $projecttypes = ProjectType::latest()->get();
+        return view('projecttype.index', compact('projecttypes'));
     }
 
     /**
