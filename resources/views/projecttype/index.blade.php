@@ -12,7 +12,7 @@
                 </ol>
             </nav>
         </div>
-        <div class="ms-auto">
+        {{-- <div class="ms-auto">
             <div class="btn-group">
                 <button type="button" class="btn btn-primary">Settings</button>
                 <button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split"
@@ -25,7 +25,7 @@
                     <div class="dropdown-divider"></div> <a class="dropdown-item" href="javascript:;">Separated link</a>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
     <div class="row justify-content-center">
         <div class="col-md-4">
@@ -62,7 +62,7 @@
             <div class="card">
                 <div class="card-header">Project Type List</div>
 
-                <div class="card-body">
+                <div class="card-body table-responsive">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -81,14 +81,18 @@
                                     <td>{{ $projecttype->addedBy?->name ?? 'N/A' }}</td>
                                     <td>{{ $projecttype->created_at->diffForHumans() }}</td>
                                     <td>
-                                        <a href="{{ route('projecttype.edit', $projecttype->id) }}"
-                                            class="btn btn-sm btn-warning">Edit</a>
-                                        <form action="{{ route('projecttype.destroy', $projecttype->id) }}" method="POST"
-                                            class="delete-form" style="display:inline-block;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                        </form>
+                                        <div class="btn-group btn-group-sm" role="group"
+                                            aria-label="Project type actions">
+                                            <a href="{{ route('projecttype.edit', $projecttype->id) }}"
+                                                class="btn btn-warning">Edit</a>
+                                            <form action="{{ route('projecttype.destroy', $projecttype->id) }}"
+                                                method="POST" class="delete-form m-0">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="btn btn-sm btn-danger rounded-start-0">Delete</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -101,36 +105,36 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.delete-form').forEach(function (form) {
-            form.addEventListener('submit', function (event) {
-                event.preventDefault();
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.delete-form').forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
 
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: 'This project type will be deleted.',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then(function (result) {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'This project type will be deleted.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then(function(result) {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
                 });
             });
-        });
 
-        @if (session('deleted'))
-            Swal.fire({
-                title: 'Deleted!',
-                text: @json(session('deleted')),
-                icon: 'success',
-                confirmButtonColor: '#0d6efd'
-            });
-        @endif
-    });
-</script>
+            @if (session('deleted'))
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: @json(session('deleted')),
+                    icon: 'success',
+                    confirmButtonColor: '#0d6efd'
+                });
+            @endif
+        });
+    </script>
 @endsection

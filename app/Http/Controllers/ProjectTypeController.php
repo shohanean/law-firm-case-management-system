@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProjectType;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProjectTypeController extends Controller
 {
@@ -54,17 +55,30 @@ class ProjectTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ProjectType $projectType)
+    public function edit(ProjectType $projecttype)
     {
-        //
+        return view('projecttype.edit', compact('projecttype'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProjectType $projectType)
+    public function update(Request $request, ProjectType $projecttype)
     {
-        //
+        $request->validate([
+            'project_type_name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('project_types', 'project_type_name')->ignore($projecttype->id),
+            ],
+        ]);
+
+        $projecttype->update([
+            'project_type_name' => $request->project_type_name,
+        ]);
+
+        return back()->with('success', 'Project type updated successfully.');
     }
 
     /**
