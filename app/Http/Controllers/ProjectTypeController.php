@@ -12,7 +12,7 @@ class ProjectTypeController extends Controller
      */
     public function index()
     {
-        $projecttypes = ProjectType::latest()->get();
+        $projecttypes = ProjectType::with('addedBy')->latest()->get();
         return view('projecttype.index', compact('projecttypes'));
     }
 
@@ -29,7 +29,18 @@ class ProjectTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'project_type_name' => ['required', 'string', 'max:255', 'unique:project_types,project_type_name'],
+        ]);
+
+        ProjectType::create([
+            'project_type_name' => $request->project_type_name,
+            'added_by' => auth()->id(),
+        ]);
+
+        return redirect()
+            ->route('projecttype.index')
+            ->with('success', 'Project type added successfully.');
     }
 
     /**
@@ -59,8 +70,12 @@ class ProjectTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProjectType $projectType)
+    public function destroy(ProjectType $projecttype)
     {
-        //
+        $projecttype->delete();
+
+        return redirect()
+            ->route('projecttype.index')
+            ->with('deleted', 'Project type deleted successfully.');
     }
 }

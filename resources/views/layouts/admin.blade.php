@@ -255,15 +255,16 @@
   <script src="{{ asset('dashboard_assets') }}/plugins/chartjs/js/Chart.min.js"></script>
   <script src="{{ asset('dashboard_assets') }}/plugins/chartjs/js/Chart.extension.js"></script>
   <script src="{{ asset('dashboard_assets') }}/plugins/apexcharts-bundle/js/apexcharts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!--app-->
   <script src="{{ asset('dashboard_assets') }}/js/app.js"></script>
   <script src="{{ asset('dashboard_assets') }}/js/index.js"></script>
   <script>
     new PerfectScrollbar(".best-product")
  </script>
+ @yield('scripts')
 
 
 </body>
 
 </html>
-
