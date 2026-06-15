@@ -31,6 +31,19 @@
   <link href="{{ asset('dashboard_assets') }}/css/header-colors.css" rel="stylesheet" />
 
   <title>Onedash - Bootstrap 5 Admin Template</title>
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function () {
+      function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+      }
+      var theme = getCookie('cms_theme');
+      var headerColor = getCookie('cms_header_color');
+      if (theme) document.documentElement.className = theme;
+      if (headerColor) document.documentElement.classList.add('color-header', headerColor);
+    })();
+  </script>
 </head>
 
 <body>
@@ -264,6 +277,58 @@
  </script>
  @yield('scripts')
 
+  <script>
+    (function () {
+      var COOKIE_DAYS = 365;
+
+      function setCookie(name, value) {
+        var expires = new Date(Date.now() + COOKIE_DAYS * 864e5).toUTCString();
+        document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+      }
+
+      function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+      }
+
+      // Restore radio button to match saved theme
+      var themeMap = {
+        'light-theme':  'LightTheme',
+        'dark-theme':   'DarkTheme',
+        'semi-dark':    'SemiDarkTheme',
+        'minimal-theme':'MinimalTheme'
+      };
+      var savedTheme = getCookie('cms_theme');
+      if (savedTheme && themeMap[savedTheme]) {
+        var radio = document.getElementById(themeMap[savedTheme]);
+        if (radio) radio.checked = true;
+      }
+
+      // Save theme on radio click
+      document.querySelectorAll('input[name="inlineRadioOptions"]').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+          var classMap = {
+            'LightTheme':   'light-theme',
+            'DarkTheme':    'dark-theme',
+            'SemiDarkTheme':'semi-dark',
+            'MinimalTheme': 'minimal-theme'
+          };
+          var cls = classMap[this.id];
+          if (cls) setCookie('cms_theme', cls);
+        });
+      });
+
+      // Save header color on click
+      for (var i = 1; i <= 8; i++) {
+        (function (n) {
+          var el = document.getElementById('headercolor' + n);
+          if (el) el.addEventListener('click', function () {
+            setCookie('cms_header_color', 'headercolor' + n);
+          });
+        })(i);
+      }
+    })();
+  </script>
 
 </body>
 

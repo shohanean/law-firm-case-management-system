@@ -60,7 +60,9 @@ class CaseController extends Controller
      */
     public function show(LegalCase $case)
     {
-        //
+        $case->load(['projectType', 'status', 'assignedTo']);
+
+        return view('case.show', compact('case'));
     }
 
     /**

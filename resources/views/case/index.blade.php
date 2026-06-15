@@ -141,8 +141,8 @@
                 <div class="card-body table-responsive">
                     <table class="table table-bordered">
                         <thead>
-                            <tr>
-                                <th>Sr. No.</th>
+                            <tr class="text-center">
+                                <th>Sl. No.</th>
                                 <th>Client Name</th>
                                 <th>Open Project?</th>
                                 <th>Project Type</th>
@@ -163,14 +163,20 @@
                                     <td>{{ $case->assignedTo?->name ?? 'N/A' }}</td>
                                     <td>{{ $case->urgency ? 'Yes' : 'No' }}</td>
                                     <td>
-                                        <div class="btn-group btn-group-sm" role="group" aria-label="Case actions">
-                                            <a href="{{ route('case.edit', $case->id) }}" class="btn btn-warning">Edit</a>
+                                        <div class="d-flex align-items-center gap-3 fs-6">
+                                            <a href="{{ route('case.show', $case->id) }}" class="text-primary" title="View">
+                                                <i class="bi bi-eye-fill"></i>
+                                            </a>
+                                            <a href="{{ route('case.edit', $case->id) }}" class="text-warning" title="Edit">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </a>
                                             <form action="{{ route('case.destroy', $case->id) }}" method="POST"
                                                 class="delete-form m-0">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit"
-                                                    class="btn btn-sm btn-danger rounded-start-0">Delete</button>
+                                                <button type="submit" class="btn p-0 text-danger border-0 bg-transparent fs-6" title="Delete">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </button>
                                             </form>
                                         </div>
                                     </td>
