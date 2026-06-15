@@ -136,6 +136,14 @@
               </a>
             </li>
             <li>
+              <a href="{{ route('case.index') }}">
+                <div class="parent-icon"><i class="bi bi-folder-fill"></i>
+                </div>
+                <div class="menu-title">Case</div>
+              </a>
+            </li>
+            <li class="menu-label">Settings</li>
+            <li>
               <a href="{{ route('projecttype.index') }}">
                 <div class="parent-icon"><i class="bi bi-briefcase-fill"></i>
                 </div>
@@ -147,28 +155,6 @@
                 <div class="parent-icon"><i class="bi bi-check2-circle"></i>
                 </div>
                 <div class="menu-title">Status</div>
-              </a>
-            </li>
-            <li>
-              <a href="{{ route('case.index') }}">
-                <div class="parent-icon"><i class="bi bi-folder-fill"></i>
-                </div>
-                <div class="menu-title">Case</div>
-              </a>
-            </li>
-            <li class="menu-label">Others</li>
-            <li>
-              <a href="https://codervent.com/skodash/documentation/index.html" target="_blank">
-                <div class="parent-icon"><i class="bi bi-file-code-fill"></i>
-                </div>
-                <div class="menu-title">Documentation</div>
-              </a>
-            </li>
-            <li>
-              <a href="https://themeforest.net/user/codervent" target="_blank">
-                <div class="parent-icon"><i class="bi bi-telephone-fill"></i>
-                </div>
-                <div class="menu-title">Support</div>
               </a>
             </li>
           </ul>
