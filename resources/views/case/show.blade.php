@@ -45,7 +45,7 @@
                                     @if($case->open_project)
                                         <span class="badge bg-success">Yes</span>
                                     @else
-                                        <span class="badge bg-secondary">No</span>
+                                        <span class="badge bg-danger">No</span>
                                     @endif
                                 </td>
                             </tr>

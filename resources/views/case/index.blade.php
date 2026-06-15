@@ -159,7 +159,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($cases as $case)
+                            @forelse ($cases as $case)
                                 <tr>
                                     <td class="text-center">{{ $loop->index + 1 }}</td>
                                     <td>{{ $case->client_name }}</td>
@@ -209,7 +209,11 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="50" class="text-center">No cases found.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

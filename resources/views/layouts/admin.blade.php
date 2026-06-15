@@ -74,14 +74,18 @@
               <li class="nav-item dropdown dropdown-user-setting">
                 <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown">
                   <div class="user-setting d-flex align-items-center">
-                    <img src="{{ asset('dashboard_assets') }}/images/avatars/avatar-1.png" class="user-img" alt="">
+                    <div class="user-img d-flex align-items-center justify-content-center rounded-circle bg-primary text-white fw-bold" style="width:36px;height:36px;font-size:14px;">
+                      {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </div>
                   </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li>
                      <a class="dropdown-item" href="">
                        <div class="d-flex align-items-center">
-                          <img src="{{ asset('dashboard_assets') }}/images/avatars/avatar-1.png" alt="" class="rounded-circle" width="54" height="54">
+                          <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white fw-bold" style="width:54px;height:54px;font-size:20px;flex-shrink:0;">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                          </div>
                           <div class="ms-3">
                             <h6 class="mb-0 dropdown-user-name">{{ auth()->user()->name }}</h6>
                             <small class="mb-0 dropdown-user-designation text-secondary">Created on {{ auth()->user()->created_at->format('F j, Y') }}</small>
@@ -168,6 +172,13 @@
                 <div class="parent-icon"><i class="bi bi-check2-circle"></i>
                 </div>
                 <div class="menu-title">Status</div>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('user.index') }}">
+                <div class="parent-icon"><i class="bi bi-people-fill"></i>
+                </div>
+                <div class="menu-title">Users</div>
               </a>
             </li>
             <li>
