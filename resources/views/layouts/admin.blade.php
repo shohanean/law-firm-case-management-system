@@ -142,6 +142,20 @@
                 <div class="menu-title">Project Type</div>
               </a>
             </li>
+            <li>
+              <a href="{{ route('status.index') }}">
+                <div class="parent-icon"><i class="bi bi-check2-circle"></i>
+                </div>
+                <div class="menu-title">Status</div>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('case.index') }}">
+                <div class="parent-icon"><i class="bi bi-folder-fill"></i>
+                </div>
+                <div class="menu-title">Case</div>
+              </a>
+            </li>
             <li class="menu-label">Others</li>
             <li>
               <a href="https://codervent.com/skodash/documentation/index.html" target="_blank">
