@@ -91,7 +91,7 @@
                    </li>
                    <li><hr class="dropdown-divider"></li>
                    <li>
-                      <a class="dropdown-item" href="">
+                      <a class="dropdown-item" href="{{ route('profile.edit') }}">
                          <div class="d-flex align-items-center">
                            <div class=""><i class="bi bi-person-fill"></i></div>
                            <div class="ms-3"><span>Profile</span></div>
@@ -168,6 +168,13 @@
                 <div class="parent-icon"><i class="bi bi-check2-circle"></i>
                 </div>
                 <div class="menu-title">Status</div>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('profile.edit') }}">
+                <div class="parent-icon"><i class="bi bi-person-fill"></i>
+                </div>
+                <div class="menu-title">Profile</div>
               </a>
             </li>
           </ul>

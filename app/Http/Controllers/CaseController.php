@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LegalCase;
+use App\Models\Remark;
 use App\Models\ProjectType;
 use App\Models\Status;
 use App\Models\User;
@@ -60,9 +61,11 @@ class CaseController extends Controller
      */
     public function show(LegalCase $case)
     {
-        $case->load(['projectType', 'status', 'assignedTo']);
+        $case->load(['projectType', 'status', 'assignedTo', 'addedBy']);
 
-        return view('case.show', compact('case'));
+        $remarks = $case->remarks()->with('addedBy')->latest()->paginate(5);
+
+        return view('case.show', compact('case', 'remarks'));
     }
 
     /**
@@ -95,6 +98,21 @@ class CaseController extends Controller
         $case->update($validated);
 
         return back()->with('success', 'Case updated successfully.');
+    }
+
+    public function remarkStore(Request $request, LegalCase $case)
+    {
+        $request->validate([
+            'remarks' => ['required', 'string'],
+        ]);
+
+        Remark::create([
+            'legal_case_id' => $case->id,
+            'remarks'       => $request->remarks,
+            'added_by'      => auth()->id(),
+        ]);
+
+        return back()->with('remark_success', 'Remark added successfully.');
     }
 
     /**

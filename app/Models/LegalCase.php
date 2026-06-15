@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LegalCase extends Model
@@ -40,5 +41,10 @@ class LegalCase extends Model
     public function addedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'added_by');
+    }
+
+    public function remarks(): HasMany
+    {
+        return $this->hasMany(Remark::class, 'legal_case_id');
     }
 }

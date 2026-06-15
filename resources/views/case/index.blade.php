@@ -139,6 +139,12 @@
                 <div class="card-header">Case List</div>
 
                 <div class="card-body table-responsive">
+                    @if (session('remark_success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('remark_success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
                     <table class="table table-bordered">
                         <thead>
                             <tr class="text-center">
@@ -155,29 +161,51 @@
                         <tbody>
                             @foreach ($cases as $case)
                                 <tr>
-                                    <td>{{ $loop->index + 1 }}</td>
+                                    <td class="text-center">{{ $loop->index + 1 }}</td>
                                     <td>{{ $case->client_name }}</td>
-                                    <td>{{ $case->open_project ? 'Yes' : 'No' }}</td>
+                                    <td class="text-center">{{ $case->open_project ? 'Yes' : 'No' }}</td>
                                     <td>{{ $case->projectType?->project_type_name ?? 'N/A' }}</td>
                                     <td>{{ $case->status?->status_name ?? 'N/A' }}</td>
                                     <td>{{ $case->assignedTo?->name ?? 'N/A' }}</td>
-                                    <td>{{ $case->urgency ? 'Yes' : 'No' }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3 fs-6">
-                                            <a href="{{ route('case.show', $case->id) }}" class="text-primary" title="View">
-                                                <i class="bi bi-eye-fill"></i>
-                                            </a>
-                                            <a href="{{ route('case.edit', $case->id) }}" class="text-warning" title="Edit">
-                                                <i class="bi bi-pencil-fill"></i>
-                                            </a>
-                                            <form action="{{ route('case.destroy', $case->id) }}" method="POST"
-                                                class="delete-form m-0">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn p-0 text-danger border-0 bg-transparent fs-6" title="Delete">
-                                                    <i class="bi bi-trash-fill"></i>
-                                                </button>
-                                            </form>
+                                    <td class="text-center">{{ $case->urgency ? 'Yes' : 'No' }}</td>
+                                    <td class="text-center">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('case.show', $case->id) }}">
+                                                        <i class="bi bi-eye-fill me-2 text-primary"></i> View
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('case.edit', $case->id) }}">
+                                                        <i class="bi bi-pencil-fill me-2 text-warning"></i> Edit
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#addRemarkModal"
+                                                        data-case-id="{{ $case->id }}"
+                                                        data-client="{{ $case->client_name }}">
+                                                        <i class="bi bi-chat-left-text-fill me-2 text-success"></i> Add Remark
+                                                    </a>
+                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    <form action="{{ route('case.destroy', $case->id) }}" method="POST"
+                                                        class="delete-form m-0">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item text-danger">
+                                                            <i class="bi bi-trash-fill me-2"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </td>
                                 </tr>
@@ -188,6 +216,34 @@
             </div>
         </div>
     </div>
+
+    {{-- Add Remark Modal --}}
+    <div class="modal fade" id="addRemarkModal" tabindex="-1" aria-labelledby="addRemarkModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addRemarkModalLabel">Add Remark</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="remarkForm" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <p class="text-muted mb-3">Case: <strong id="remarkClientName"></strong></p>
+                        <div class="mb-0">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <textarea name="remarks" id="remarks" rows="5"
+                                class="form-control" placeholder="Write your remark here..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit Remark</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('scripts')
@@ -221,6 +277,16 @@
                     confirmButtonColor: '#0d6efd'
                 });
             @endif
+
+            // Set remark modal form action & client name dynamically
+            document.getElementById('addRemarkModal').addEventListener('show.bs.modal', function (event) {
+                var trigger = event.relatedTarget;
+                var caseId = trigger.getAttribute('data-case-id');
+                var client = trigger.getAttribute('data-client');
+                document.getElementById('remarkForm').action = '/case/' + caseId + '/remark';
+                document.getElementById('remarkClientName').textContent = client;
+                document.getElementById('remarks').value = '';
+            });
         });
     </script>
 @endsection

@@ -67,14 +67,23 @@
     <div class="row">
         <div class="col-12 col-lg-12 col-xl-12 d-flex">
             <div class="card radius-10 w-100">
-                <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <h6 class="mb-0">Open Cases</h6>
+                <div class="card-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h6 class="mb-0">Open Cases</h6>
+                        <a href="{{ route('case.index') }}" class="btn btn-sm btn-outline-primary">All Cases</a>
+                    </div>
                 </div>
+                <div class="card-body">
+                @if (session('remark_success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('remark_success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
                 <div class="table-responsive mt-2">
-                    <table class="table align-middle mb-0">
+                    <table class="table table-bordered">
                     <thead class="table-light">
-                        <tr>
+                        <tr class="text-center">
                             <th>SL. No.</th>
                             <th>Client Name</th>
                             <th>Project Type</th>
@@ -82,17 +91,18 @@
                             <th>Assigned To</th>
                             <th>Urgency</th>
                             <th>Created At</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($cases as $case)
                         <tr>
-                            <td>{{ $loop->index + 1 }}</td>
+                            <td class="text-center">{{ $loop->index + 1 }}</td>
                             <td>{{ $case->client_name }}</td>
                             <td>{{ $case->projectType->project_type_name ?? '-' }}</td>
                             <td>{{ $case->status->status_name ?? '-' }}</td>
-                            <td>{{ $case->assignedTo->name ?? '-' }}</td>
-                            <td>
+                            <td><i class="bi bi-person-circle me-2"></i>{{ $case->assignedTo->name ?? '-' }}</td>
+                            <td class="text-center">
                                 @if($case->urgency)
                                     <span class="badge bg-danger">Urgent</span>
                                 @else
@@ -100,9 +110,49 @@
                                 @endif
                             </td>
                             <td>{{ $case->created_at->format('d M Y') }}</td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('case.show', $case->id) }}">
+                                                <i class="bi bi-eye-fill me-2 text-primary"></i> View
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('case.edit', $case->id) }}">
+                                                <i class="bi bi-pencil-fill me-2 text-warning"></i> Edit
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#addRemarkModal"
+                                                data-case-id="{{ $case->id }}"
+                                                data-client="{{ $case->client_name }}">
+                                                <i class="bi bi-chat-left-text-fill me-2 text-success"></i> Add Remark
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form action="{{ route('case.destroy', $case->id) }}" method="POST"
+                                                class="delete-form m-0">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="bi bi-trash-fill me-2"></i> Delete
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
                         </tr>
                         @empty
-                        <tr><td colspan="7" class="text-center">No open cases found.</td></tr>
+                        <tr><td colspan="8" class="text-center">No open cases found.</td></tr>
                         @endforelse
                     </tbody>
                     </table>
@@ -112,4 +162,63 @@
         </div>
     </div><!--end row-->
 
+    {{-- Add Remark Modal --}}
+    <div class="modal fade" id="addRemarkModal" tabindex="-1" aria-labelledby="addRemarkModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addRemarkModalLabel">Add Remark</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="remarkForm" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <p class="text-muted mb-3">Case: <strong id="remarkClientName"></strong></p>
+                        <div class="mb-0">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <textarea name="remarks" id="remarks" rows="5"
+                                class="form-control" placeholder="Write your remark here..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit Remark</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+@endsection
+
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('addRemarkModal').addEventListener('show.bs.modal', function (event) {
+                var trigger = event.relatedTarget;
+                var caseId = trigger.getAttribute('data-case-id');
+                var client = trigger.getAttribute('data-client');
+                document.getElementById('remarkForm').action = '/case/' + caseId + '/remark';
+                document.getElementById('remarkClientName').textContent = client;
+                document.getElementById('remarks').value = '';
+            });
+
+            document.querySelectorAll('.delete-form').forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'This case will be deleted.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then(function (result) {
+                        if (result.isConfirmed) form.submit();
+                    });
+                });
+            });
+        });
+    </script>
 @endsection
