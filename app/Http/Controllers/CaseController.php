@@ -115,6 +115,17 @@ class CaseController extends Controller
         return back()->with('remark_success', 'Remark added successfully.');
     }
 
+    public function updateStatus(Request $request, LegalCase $case)
+    {
+        $request->validate([
+            'status_id' => ['required', 'exists:statuses,id'],
+        ]);
+
+        $case->update(['status_id' => $request->status_id]);
+
+        return response()->json(['success' => true]);
+    }
+
     /**
      * Remove the specified resource from storage.
      */

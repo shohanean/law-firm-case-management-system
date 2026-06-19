@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('user', UserController::class)->except(['show', 'create']);
     Route::resource('case', CaseController::class);
     Route::post('/case/{case}/remark', [CaseController::class, 'remarkStore'])->name('case.remark.store');
+    Route::patch('/case/{case}/status', [CaseController::class, 'updateStatus'])->name('case.status.update');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

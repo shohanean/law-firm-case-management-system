@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function dashboard()
     {
-        $cases = LegalCase::with(['projectType', 'status', 'assignedTo'])->where('open_project', true)->latest()->get();
+        $cases = LegalCase::with(['projectType', 'status', 'assignedTo'])->latest()->get();
         $projectTypes = ProjectType::all();
         $statuses = Status::all();
         $users = User::all();

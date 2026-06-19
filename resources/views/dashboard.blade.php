@@ -8,7 +8,7 @@
             <div class="d-flex align-items-center">
                 <div class="">
                 <p class="mb-1">Total Open Cases</p>
-                <h4 class="mb-0 text-pink">{{ $cases->count() }}</h4>
+                <h4 class="mb-0 text-pink">{{ $cases->where('open_project', true)->count() }}</h4>
                 </div>
                 <div class="ms-auto widget-icon bg-pink text-white">
                 <i class="bi bi-folder-fill"></i>
@@ -95,12 +95,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($cases as $case)
+                        @forelse ($cases->where('open_project', true) as $case)
                         <tr>
                             <td class="text-center">{{ $loop->index + 1 }}</td>
                             <td class="text-wrap" style="max-width: 150px;">{{ $case->client_name }}</td>
                             <td class="text-wrap" style="max-width: 150px;">{{ $case->projectType->project_type_name ?? '-' }}</td>
-                            <td class="text-wrap" style="max-width: 150px;">{{ $case->status->status_name ?? '-' }}</td>
+                            <td>
+                                <select class="form-select form-select-sm status-select"
+                                    data-case-id="{{ $case->id }}"
+                                    data-url="{{ route('case.status.update', $case->id) }}">
+                                    @foreach ($statuses as $status)
+                                        <option value="{{ $status->id }}"
+                                            @selected($case->status_id === $status->id)>
+                                            {{ $status->status_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </td>
                             <td class="text-wrap" style="max-width: 150px;"><i class="bi bi-person-circle me-2"></i>{{ $case->assignedTo->name ?? '-' }}</td>
                             <td class="text-center">
                                 @if($case->urgency)
@@ -224,10 +235,10 @@
         new Chart(ctx1, {
             type: 'doughnut',
             data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            labels: ['Open Cases', 'Closed Cases'],
             datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
+                label: '# of Cases',
+                data: [{{ $cases->where('open_project', true)->count() }}, {{ $cases->where('open_project', false)->count() }}],
                 borderWidth: 1
             }]
             },
@@ -279,6 +290,42 @@
         });
         // caseListTable end
         document.addEventListener('DOMContentLoaded', function () {
+            const csrfToken = '{{ csrf_token() }}';
+
+            document.querySelectorAll('.status-select').forEach(function (select) {
+                const originalValue = select.value;
+                select.dataset.original = originalValue;
+
+                select.addEventListener('change', function () {
+                    const url    = this.dataset.url;
+                    const body   = new URLSearchParams({ _method: 'PATCH', status_id: this.value });
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Accept': 'application/json',
+                        },
+                        body: body.toString(),
+                    })
+                    .then(function (res) {
+                        if (!res.ok) throw new Error('Server error');
+                        return res.json();
+                    })
+                    .then(function () {
+                        select.dataset.original = select.value;
+                        Swal.fire({ toast: true, position: 'top-end', icon: 'success',
+                            title: 'Status updated', showConfirmButton: false, timer: 1800 });
+                    })
+                    .catch(function () {
+                        select.value = select.dataset.original;
+                        Swal.fire({ toast: true, position: 'top-end', icon: 'error',
+                            title: 'Update failed', showConfirmButton: false, timer: 2000 });
+                    });
+                });
+            });
+
             document.getElementById('addRemarkModal').addEventListener('show.bs.modal', function (event) {
                 var trigger = event.relatedTarget;
                 var caseId = trigger.getAttribute('data-case-id');
