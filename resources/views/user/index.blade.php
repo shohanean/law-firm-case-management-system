@@ -78,7 +78,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">User List</div>
-                <div class="card-body table-responsive" style="overflow: visible">
+                <div class="card-body table-responsive">
                     <table class="table table-bordered">
                         <thead>
                             <tr class="text-center">

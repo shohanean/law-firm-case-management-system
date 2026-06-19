@@ -32,7 +32,7 @@
 
   <link href="//cdn.datatables.net/2.3.8/css/dataTables.dataTables.min.css" rel="stylesheet" />
 
-  <title>Onedash - Bootstrap 5 Admin Template</title>
+  <title>{{ env('APP_NAME') }}</title>
   <script>
     // Apply saved theme before page renders to prevent flash
     (function () {
@@ -59,20 +59,20 @@
           <div class="mobile-toggle-icon fs-3">
               <i class="bi bi-list"></i>
             </div>
-            <form class="searchbar">
+            <!-- <form class="searchbar">
                 <div class="position-absolute top-50 translate-middle-y search-icon ms-3"><i class="bi bi-search"></i></div>
                 <input class="form-control" type="text" placeholder="Type here to search">
                 <div class="position-absolute top-50 translate-middle-y search-close-icon"><i class="bi bi-x-lg"></i></div>
-            </form>
+            </form> -->
             <div class="top-navbar-right ms-auto">
               <ul class="navbar-nav align-items-center">
-                <li class="nav-item search-toggle-icon">
+                <!-- <li class="nav-item search-toggle-icon">
                   <a class="nav-link" href="#">
                     <div class="">
                       <i class="bi bi-search"></i>
                     </div>
                   </a>
-              </li>
+                </li> -->
               <li class="nav-item dropdown dropdown-user-setting">
                 <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown">
                   <div class="user-setting d-flex align-items-center">
