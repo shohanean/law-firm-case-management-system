@@ -104,14 +104,14 @@
                          </div>
                        </a>
                     </li>
-                    <li>
+                    <!-- <li>
                       <a class="dropdown-item disabled" href="#">
                          <div class="d-flex align-items-center">
                            <div class=""><i class="bi bi-gear-fill"></i></div>
                            <div class="ms-3"><span>Settings</span></div>
                          </div>
                        </a>
-                    </li>
+                    </li> -->
                     <li><hr class="dropdown-divider"></li>
                     <li>
                     <form method="POST" action="{{ route('logout') }}">

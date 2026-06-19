@@ -47,7 +47,7 @@ class StatusController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Status $status)
+    public function show()
     {
         //
     }
@@ -55,16 +55,19 @@ class StatusController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Status $status)
+    public function edit($id)
     {
+        $status = Status::findOrFail($id);
         return view('status.edit', compact('status'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Status $status)
+    public function update(Request $request, $id)
     {
+        $status = Status::findOrFail($id);
+
         $request->validate([
             'status_name' => [
                 'required',
@@ -84,8 +87,9 @@ class StatusController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Status $status)
+    public function destroy($id)
     {
+        $status = Status::findOrFail($id);
         $status->delete();
 
         return redirect()
