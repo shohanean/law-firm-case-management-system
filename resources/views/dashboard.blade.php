@@ -81,7 +81,7 @@
                     </div>
                 @endif
                 <div class="table-responsive mt-2" >
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="dashboardCaseListTable">
                     <thead class="table-light">
                         <tr class="text-center">
                             <th>SL. No.</th>
@@ -197,6 +197,21 @@
 
 @section('scripts')
     <script>
+        // caseListTable start
+        let table = new DataTable('#dashboardCaseListTable', {
+            responsive: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50, 100],
+        });
+
+        table.on('draw.dt', function () {
+            let pageInfo = table.page.info();
+
+            table.column(0, { page: 'current' }).nodes().each(function (cell, i) {
+                cell.innerHTML = pageInfo.start + i + 1;
+            });
+        });
+        // caseListTable end
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('addRemarkModal').addEventListener('show.bs.modal', function (event) {
                 var trigger = event.relatedTarget;
