@@ -165,7 +165,28 @@
             </div>
         </div>
     </div><!--end row-->
-
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Case Distribution 1</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="myChart1"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Case Distribution 2</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="myChart2"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
     {{-- Add Remark Modal --}}
     <div class="modal fade" id="addRemarkModal" tabindex="-1" aria-labelledby="addRemarkModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -197,6 +218,51 @@
 
 @section('scripts')
     <script>
+        // myChart1 start
+        const ctx1 = document.getElementById('myChart1');
+
+        new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                borderWidth: 1
+            }]
+            },
+            options: {
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            }
+            }
+        });
+        // myChart1 end
+        // myChart2 start
+        const ctx2 = document.getElementById('myChart2');
+
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                borderWidth: 1
+            }]
+            },
+            options: {
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            }
+            }
+        });
+        // myChart2 end
+
         // caseListTable start
         let table = new DataTable('#dashboardCaseListTable', {
             responsive: true,

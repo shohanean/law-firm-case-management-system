@@ -295,7 +295,8 @@
   <script>
     new PerfectScrollbar(".best-product")
  </script>
- <script src="//cdn.datatables.net/2.3.8/js/dataTables.min.js"></script>
+ <script src="https://cdn.datatables.net/2.3.8/js/dataTables.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
  @yield('scripts')
 
   <script>
