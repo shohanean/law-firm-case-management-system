@@ -98,10 +98,10 @@
                         @forelse ($cases as $case)
                         <tr>
                             <td class="text-center">{{ $loop->index + 1 }}</td>
-                            <td>{{ $case->client_name }}</td>
-                            <td>{{ $case->projectType->project_type_name ?? '-' }}</td>
-                            <td>{{ $case->status->status_name ?? '-' }}</td>
-                            <td><i class="bi bi-person-circle me-2"></i>{{ $case->assignedTo->name ?? '-' }}</td>
+                            <td class="text-wrap" style="max-width: 150px;">{{ $case->client_name }}</td>
+                            <td class="text-wrap" style="max-width: 150px;">{{ $case->projectType->project_type_name ?? '-' }}</td>
+                            <td class="text-wrap" style="max-width: 150px;">{{ $case->status->status_name ?? '-' }}</td>
+                            <td class="text-wrap" style="max-width: 150px;"><i class="bi bi-person-circle me-2"></i>{{ $case->assignedTo->name ?? '-' }}</td>
                             <td class="text-center">
                                 @if($case->urgency)
                                     <span class="badge bg-danger">Urgent</span>
@@ -109,7 +109,11 @@
                                     <span class="badge bg-secondary">Normal</span>
                                 @endif
                             </td>
-                            <td>{{ $case->created_at->format('d M Y') }}</td>
+                            <td>
+                                {{ $case->created_at->format('d M Y') }}
+                                <br>
+                                <small class="text-muted">{{ $case->created_at->diffForHumans() }}</small>
+                            </td>
                             <td class="text-center">
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"

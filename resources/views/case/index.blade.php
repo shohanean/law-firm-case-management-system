@@ -40,18 +40,37 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label for="open_project" class="form-label">Open Project?</label>
-                            <select name="open_project" id="open_project"
-                                class="form-select @error('open_project') is-invalid @enderror" required>
-                                <option value="">Select option</option>
-                                <option value="1" @selected(old('open_project') === '1')>Yes</option>
-                                <option value="0" @selected(old('open_project') === '0')>No</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="open_project" class="form-label">Open Project?</label>
+                                    <select name="open_project" id="open_project"
+                                        class="form-select @error('open_project') is-invalid @enderror" required>
+                                        <option value="">Select option</option>
+                                        <option value="1" @selected(old('open_project') === '1')>Yes</option>
+                                        <option value="0" @selected(old('open_project') === '0')>No</option>
+                                    </select>
 
-                            @error('open_project')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                    @error('open_project')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="urgency" class="form-label">Urgency</label>
+                                    <select name="urgency" id="urgency" class="form-select @error('urgency') is-invalid @enderror"
+                                        required>
+                                        <option value="">Select option</option>
+                                        <option value="1" @selected(old('urgency') === '1')>Yes</option>
+                                        <option value="0" @selected(old('urgency') === '0')>No</option>
+                                    </select>
+
+                                    @error('urgency')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -114,21 +133,6 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-
-                        <div class="mb-3">
-                            <label for="urgency" class="form-label">Urgency</label>
-                            <select name="urgency" id="urgency" class="form-select @error('urgency') is-invalid @enderror"
-                                required>
-                                <option value="">Select option</option>
-                                <option value="1" @selected(old('urgency') === '1')>Yes</option>
-                                <option value="0" @selected(old('urgency') === '0')>No</option>
-                            </select>
-
-                            @error('urgency')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
                         <button type="submit" class="btn btn-primary">Add Case</button>
                     </form>
                 </div>
@@ -145,7 +149,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="caseListTable">
                         <thead>
                             <tr class="text-center">
                                 <th>Sl. No.</th>
@@ -162,10 +166,10 @@
                             @forelse ($cases as $case)
                                 <tr>
                                     <td class="text-center">{{ $loop->index + 1 }}</td>
-                                    <td>{{ $case->client_name }}</td>
+                                    <td class="text-wrap" style="max-width: 150px;">{{ $case->client_name }}</td>
                                     <td class="text-center">{{ $case->open_project ? 'Yes' : 'No' }}</td>
-                                    <td>{{ $case->projectType?->project_type_name ?? 'N/A' }}</td>
-                                    <td>{{ $case->status?->status_name ?? 'N/A' }}</td>
+                                    <td class="text-wrap" style="max-width: 150px;">{{ $case->projectType?->project_type_name ?? 'N/A' }}</td>
+                                    <td class="text-wrap" style="max-width: 150px;">{{ $case->status?->status_name ?? 'N/A' }}</td>
                                     <td>{{ $case->assignedTo?->name ?? 'N/A' }}</td>
                                     <td class="text-center">{{ $case->urgency ? 'Yes' : 'No' }}</td>
                                     <td class="text-center">
@@ -252,6 +256,21 @@
 
 @section('scripts')
     <script>
+        // caseListTable start
+        let table = new DataTable('#caseListTable', {
+            responsive: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50, 100],
+        });
+
+        table.on('draw.dt', function () {
+            let pageInfo = table.page.info();
+
+            table.column(0, { page: 'current' }).nodes().each(function (cell, i) {
+                cell.innerHTML = pageInfo.start + i + 1;
+            });
+        });
+        // caseListTable end
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.delete-form').forEach(function(form) {
                 form.addEventListener('submit', function(event) {

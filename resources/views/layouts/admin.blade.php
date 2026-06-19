@@ -30,6 +30,8 @@
   <link href="{{ asset('dashboard_assets') }}/css/semi-dark.css" rel="stylesheet" />
   <link href="{{ asset('dashboard_assets') }}/css/header-colors.css" rel="stylesheet" />
 
+  <link href="//cdn.datatables.net/2.3.8/css/dataTables.dataTables.min.css" rel="stylesheet" />
+
   <title>Onedash - Bootstrap 5 Admin Template</title>
   <script>
     // Apply saved theme before page renders to prevent flash
@@ -293,6 +295,7 @@
   <script>
     new PerfectScrollbar(".best-product")
  </script>
+ <script src="//cdn.datatables.net/2.3.8/js/dataTables.min.js"></script>
  @yield('scripts')
 
   <script>
