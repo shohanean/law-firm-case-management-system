@@ -180,7 +180,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="mb-0">Case Distribution 1</h6>
+                    <h6 class="mb-0">Opev vs. Closed Cases</h6>
                 </div>
                 <div class="card-body">
                     <canvas id="myChart1"></canvas>
@@ -190,7 +190,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="mb-0">Case Distribution 2</h6>
+                    <h6 class="mb-0">Project Type Wise Count</h6>
                 </div>
                 <div class="card-body">
                     <canvas id="myChart2"></canvas>
@@ -252,24 +252,47 @@
         });
         // myChart1 end
         // myChart2 start
+        @php
+            $grouped = $cases->where('open_project', true)
+                ->groupBy('project_type_id')
+                ->map(fn($group) => [
+                    'label' => $group->first()->projectType?->project_type_name ?? 'Unknown',
+                    'count' => $group->count(),
+                ]);
+            $chart2Labels = $grouped->pluck('label')->values();
+            $chart2Data   = $grouped->pluck('count')->values();
+        @endphp
         const ctx2 = document.getElementById('myChart2');
 
         new Chart(ctx2, {
-            type: 'line',
+            type: 'bar',
             data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                borderWidth: 1
-            }]
+                labels: @json($chart2Labels),
+                datasets: [{
+                    label: 'Open Cases',
+                    data: @json($chart2Data),
+                    backgroundColor: 'rgba(13, 110, 253, 0.7)',
+                    borderColor: 'rgba(13, 110, 253, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                }]
             },
             options: {
-            scales: {
-                y: {
-                beginAtZero: true
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ' ' + ctx.parsed.y + ' case' + (ctx.parsed.y !== 1 ? 's' : '')
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1, precision: 0 }
+                    }
                 }
-            }
             }
         });
         // myChart2 end
