@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\CaseController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\projecttypeController;
+use App\Http\Controllers\ProjecttypeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\UserController;
@@ -18,7 +18,7 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
     Route::resource('projecttype', ProjectTypeController::class);
-    Route::resource('status', StatusController::class);
+    Route::resource('case-status', StatusController::class);
     Route::resource('user', UserController::class)->except(['show', 'create']);
     Route::resource('case', CaseController::class);
     Route::post('/case/{case}/remark', [CaseController::class, 'remarkStore'])->name('case.remark.store');
