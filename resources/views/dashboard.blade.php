@@ -18,6 +18,21 @@
         </div>
         </div>
         <div class="col">
+        <div class="card radius-10 border-0 border-start border-danger border-3">
+            <div class="card-body">
+            <div class="d-flex align-items-center">
+                <div class="">
+                <p class="mb-1">Urgent Cases</p>
+                <h4 class="mb-0 text-danger">{{ $cases->where('urgency', true)->count() }}</h4>
+                </div>
+                <div class="ms-auto widget-icon bg-danger text-white">
+                <i class="bi bi-folder-fill"></i>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+        <div class="col">
             <div class="card radius-10 border-0 border-start border-tiffany border-3">
             <div class="card-body">
                 <div class="d-flex align-items-center">
@@ -69,8 +84,7 @@
             <div class="card radius-10 w-100">
                 <div class="card-header">
                     <div class="d-flex align-items-center justify-content-between">
-                        <h6 class="mb-0">Open Cases</h6>
-                        <a href="{{ route('case.index') }}" class="btn btn-sm btn-outline-primary">All Cases</a>
+                        <h6 class="mb-0">All Cases</h6>
                     </div>
                 </div>
                 <div class="card-body">
@@ -81,25 +95,54 @@
                     </div>
                 @endif
                 <div class="table-responsive mt-2" >
-                    <table class="table table-bordered" id="dashboardCaseListTable">
+                    <table class="table table-bordered">
                     <thead class="table-light">
                         <tr class="text-center">
                             <th>SL. No.</th>
                             <th>Client Name</th>
                             <th>Project Type</th>
+                            <th>Description</th>
                             <th>Status</th>
                             <th>Assigned To</th>
                             <th>Urgency</th>
-                            <th>Created At</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($cases->where('open_project', true) as $case)
-                        <tr>
+                        <style>
+                            .tr-gray {
+                                background-color: #D9D9D9;
+                            }
+                            .tr-orenge {
+                                background-color: #FCE4D6;
+                            }
+                        </style>
+                        @forelse ($cases as $case)
+                        <tr class="
+                        @php
+                            if(!$case->open_project){
+                                echo 'tr-gray';
+                            }
+                            else{
+                                if($case->status){
+                                    if($case->status->status_name == 'Assigned to Close'){
+                                        echo 'tr-orenge';
+                                    }
+                                    else{
+                                        echo 'bg-info';
+                                    }
+                                }
+                            }
+                        @endphp
+                        ">
                             <td class="text-center">{{ $loop->index + 1 }}</td>
-                            <td class="text-wrap" style="max-width: 150px;">{{ $case->client_name }}</td>
+                            <td class="text-wrap" style="max-width: 150px;">
+                                {{ $case->client_name }}
+                            </td>
                             <td class="text-wrap" style="max-width: 150px;">{{ $case->projectType->project_type_name ?? '-' }}</td>
+                            <td class="text-wrap" style="max-width: 150px;">
+                                {{ $case->description }}
+                            </td>
                             <td>
                                 <select class="form-select form-select-sm status-select"
                                     data-case-id="{{ $case->id }}"
@@ -119,11 +162,6 @@
                                 @else
                                     <span class="badge bg-secondary">Normal</span>
                                 @endif
-                            </td>
-                            <td>
-                                {{ $case->created_at->format('d M Y') }}
-                                <br>
-                                <small class="text-muted">{{ $case->created_at->diffForHumans() }}</small>
                             </td>
                             <td class="text-center">
                                 <div class="dropdown">
@@ -296,22 +334,6 @@
             }
         });
         // myChart2 end
-
-        // caseListTable start
-        let table = new DataTable('#dashboardCaseListTable', {
-            responsive: true,
-            pageLength: 10,
-            lengthMenu: [5, 10, 25, 50, 100],
-        });
-
-        table.on('draw.dt', function () {
-            let pageInfo = table.page.info();
-
-            table.column(0, { page: 'current' }).nodes().each(function (cell, i) {
-                cell.innerHTML = pageInfo.start + i + 1;
-            });
-        });
-        // caseListTable end
         document.addEventListener('DOMContentLoaded', function () {
             const csrfToken = '{{ csrf_token() }}';
 
