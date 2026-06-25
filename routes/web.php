@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('projecttype', ProjectTypeController::class);
     Route::resource('case-status', StatusController::class)->names('status');
     Route::resource('user', UserController::class)->except(['show', 'create']);
+    Route::patch('/user/{id}/restore', [UserController::class, 'restore'])->name('user.restore');
     Route::resource('case', CaseController::class);
     Route::post('/case/{case}/remark', [CaseController::class, 'remarkStore'])->name('case.remark.store');
     Route::patch('/case/{case}/status', [CaseController::class, 'updateStatus'])->name('case.status.update');

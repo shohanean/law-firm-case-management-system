@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::latest()->get();
+        $users = User::withTrashed()->latest()->get();
         return view('user.index', compact('users'));
     }
 
@@ -71,6 +71,14 @@ class UserController extends Controller
 
         $user->delete();
 
-        return redirect()->route('user.index')->with('deleted', 'User deleted successfully.');
+        return redirect()->route('user.index')->with('deleted', 'User "' . $user->name . '" has been deleted.');
+    }
+
+    public function restore(int $id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $user->restore();
+
+        return redirect()->route('user.index')->with('restored', 'User "' . $user->name . '" has been restored.');
     }
 }

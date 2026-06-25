@@ -7,8 +7,8 @@
             <div class="card-body">
             <div class="d-flex align-items-center">
                 <div class="">
-                <p class="mb-1">Total Open Cases</p>
-                <h4 class="mb-0 text-pink">{{ $cases->where('open_project', true)->count() }}</h4>
+                <p class="mb-1">Total Cases</p>
+                <h4 class="mb-0 text-pink">{{ $cases->count() }}</h4>
                 </div>
                 <div class="ms-auto widget-icon bg-pink text-white">
                 <i class="bi bi-folder-fill"></i>
@@ -67,7 +67,7 @@
             <div class="card-body">
             <div class="d-flex align-items-center">
                 <div class="">
-                <p class="mb-1">Total Users</p>
+                <p class="mb-1">Total Active Users</p>
                 <h4 class="mb-0 text-orange">{{ $users->count() }}</h4>
                 </div>
                 <div class="ms-auto widget-icon bg-orange text-white">
