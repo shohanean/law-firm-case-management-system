@@ -5,6 +5,45 @@
     </div>
 @endif
 <div class="table-responsive mt-2" >
+    <div class="row">
+        <p>
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                How color works
+            </button>
+        </p>
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td style="background-color:#E6E6FA">Light Purple</td>
+                            <td>New Client Entry</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color:#D9D9D9">Gray</td>
+                            <td>No Open Project</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color:#FCE4D6">Orenge</td>
+                            <td>When status is "Assigned to Close"</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color:#DDEBF7">Light Blue</td>
+                            <td>When project type is "Various"</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color:#E2F0D9">Light Green</td>
+                            <td>When project type is Intellectual Property (Trademarks, Copyrights)</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color:#FFFFCC">Light Yellow</td>
+                            <td>When project type is any other option</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
     <table class="table table-bordered">
         <thead class="table-light">
             <tr class="text-center">
@@ -27,12 +66,24 @@
                 .tr-orenge {
                     background-color: #FCE4D6;
                 }
+                .tr-light-blue {
+                    background-color: #DDEBF7;
+                }
+                .tr-light-green {
+                    background-color: #E2F0D9;
+                }
+                .tr-light-yellow {
+                    background-color: #FFFFCC;
+                }
+                .tr-light-purple {
+                    background-color: #E6E6FA;
+                }
             </style>
             @forelse ($cases as $case)
             <tr class="
             @php
                 if(!$case->updated_at){
-                    echo '';
+                    echo 'tr-light-purple';
                 }
                 else{
                     if(!$case->open_project){
@@ -44,7 +95,17 @@
                                 echo 'tr-orenge';
                             }
                             else{
-                                echo 'bg-info';
+                                if($case->projectType->project_type_name == 'Various'){
+                                    echo 'tr-light-blue';
+                                }
+                                else{
+                                    if (str_contains($case->projectType->project_type_name, 'Trademark') || str_contains($case->projectType->project_type_name, 'Copyright')) {
+                                        echo 'tr-light-green';
+                                    }
+                                    else{
+                                        echo 'tr-light-yellow';
+                                    }
+                                }
                             }
                         }
                     }
@@ -89,7 +150,8 @@
                 </td>
                 @else
                 <td colspan="6" class="text-center">
-                    <span class="badge bg-success">New</span>
+                    {{-- <span class="badge bg-success">New</span> --}}
+                    ....................
                 </td>
                 @endif
                 <td class="text-center">

@@ -92,7 +92,24 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <h6>Filters:</h6>
                     <div class="row">
+                        <div class="col-2">
+                            <form action="{{ route('dashboard') }}" method="GET">
+                                <select class="form-select" name="sort" onchange="this.form.submit()">
+                                    <option @if(isset($_GET['sort']) && $_GET['sort'] === 'az') selected @endif value="az">Sort By: Client Name (A-Z)</option>
+                                    <option @if(isset($_GET['sort']) && $_GET['sort'] === 'za') selected @endif value="za">Sort By: Client Name (Z-A)</option>
+                                </select>
+                            </form>
+                        </div>
+                        <div class="col-2">
+                            <form action="{{ route('dashboard') }}" method="GET">
+                                <select class="form-select" name="sort" onchange="this.form.submit()">
+                                    <option @if(isset($_GET['sort']) && $_GET['sort'] === 'az') selected @endif value="az">Sort By: Client Name (A-Z)</option>
+                                    <option @if(isset($_GET['sort']) && $_GET['sort'] === 'za') selected @endif value="za">Sort By: Client Name (Z-A)</option>
+                                </select>
+                            </form>
+                        </div>
                         <div class="col-2">
                             <form action="{{ route('dashboard') }}" method="GET">
                                 <select class="form-select" name="sort" onchange="this.form.submit()">
