@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CaseController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ProjectTypeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatusController;
@@ -24,6 +25,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/user/{id}/restore', [UserController::class, 'restore'])->name('user.restore');
     Route::resource('case', CaseController::class);
     Route::post('/case/{case}/remark', [CaseController::class, 'remarkStore'])->name('case.remark.store');
+    Route::post('/import/preview', [ImportController::class, 'preview'])->name('import.preview');
+    Route::post('/import/confirm', [ImportController::class, 'confirm'])->name('import.confirm');
     Route::patch('/case/{case}/status', [CaseController::class, 'updateStatus'])->name('case.status.update');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

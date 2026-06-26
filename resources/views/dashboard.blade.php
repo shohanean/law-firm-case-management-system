@@ -85,6 +85,10 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center justify-content-between">
                         <h6 class="mb-0">All Cases</h6>
+                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#importClientModal">
+                            <i class="bx bx-import"></i>
+                            Import Clients from Excel
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -126,6 +130,67 @@
             </div>
         </div>
     </div>
+    {{-- Import Client Modal --}}
+    <div class="modal fade" id="importClientModal" tabindex="-1" aria-labelledby="importClientModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importClientModalLabel">Import Clients from Excel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    {{-- Step 1: Upload --}}
+                    <div id="importStep1">
+                        <p class="text-muted mb-3">Upload an <code>.xlsx</code>, <code>.xls</code>, or <code>.csv</code> file. The file must have a column named <strong>Name</strong>.</p>
+                        <div class="mb-3">
+                            <label for="importFile" class="form-label fw-medium">Choose File</label>
+                            <input type="file" id="importFile" class="form-control" accept=".xlsx,.xls,.csv">
+                            <div id="importFileError" class="text-danger mt-1 small d-none"></div>
+                        </div>
+                        <button id="importPreviewBtn" class="btn btn-primary">
+                            <span id="importPreviewSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                            Preview Names
+                        </button>
+                    </div>
+
+                    {{-- Step 2: Preview --}}
+                    <div id="importStep2" class="d-none">
+                        <p class="text-muted mb-3">Found <strong id="importCount"></strong> name(s). Review before importing:</p>
+                        <div class="table-responsive" style="max-height:340px;overflow-y:auto;">
+                            <table class="table table-sm table-bordered mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width:50px">#</th>
+                                        <th>Client Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="importPreviewBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    {{-- Step 1 footer --}}
+                    <div id="importFooter1" class="w-100 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                    {{-- Step 2 footer --}}
+                    <div id="importFooter2" class="w-100 d-flex justify-content-between align-items-center d-none">
+                        <button id="importDiscardBtn" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Discard & Go Back
+                        </button>
+                        <button id="importConfirmBtn" class="btn btn-success">
+                            <span id="importConfirmSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                            Continue &amp; Import
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Add Remark Modal --}}
     <div class="modal fade" id="addRemarkModal" tabindex="-1" aria-labelledby="addRemarkModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -260,6 +325,114 @@
                     });
                 });
             });
+
+            // ── Import Client ──────────────────────────────────────────
+            let importedNames = [];
+
+            function resetImportModal() {
+                document.getElementById('importFile').value = '';
+                document.getElementById('importFileError').classList.add('d-none');
+                document.getElementById('importStep1').classList.remove('d-none');
+                document.getElementById('importStep2').classList.add('d-none');
+                document.getElementById('importFooter1').classList.remove('d-none');
+                document.getElementById('importFooter2').classList.add('d-none');
+                document.getElementById('importPreviewBody').innerHTML = '';
+                importedNames = [];
+            }
+
+            document.getElementById('importClientModal').addEventListener('hidden.bs.modal', resetImportModal);
+
+            document.getElementById('importPreviewBtn').addEventListener('click', function () {
+                const file = document.getElementById('importFile').files[0];
+                const errEl = document.getElementById('importFileError');
+                errEl.classList.add('d-none');
+
+                if (!file) {
+                    errEl.textContent = 'Please select a file.';
+                    errEl.classList.remove('d-none');
+                    return;
+                }
+
+                const spinner = document.getElementById('importPreviewSpinner');
+                this.disabled = true;
+                spinner.classList.remove('d-none');
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('_token', csrfToken);
+
+                fetch('{{ route('import.preview') }}', {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' },
+                    body: formData,
+                })
+                .then(res => res.json().then(data => ({ ok: res.ok, data })))
+                .then(({ ok, data }) => {
+                    if (!ok) {
+                        errEl.textContent = data.error || 'Something went wrong.';
+                        errEl.classList.remove('d-none');
+                        return;
+                    }
+                    importedNames = data.names;
+                    const tbody = document.getElementById('importPreviewBody');
+                    tbody.innerHTML = importedNames.map((name, i) =>
+                        `<tr><td class="text-center text-muted">${i + 1}</td><td>${name.replace(/</g,'&lt;')}</td></tr>`
+                    ).join('');
+                    document.getElementById('importCount').textContent = importedNames.length;
+                    document.getElementById('importStep1').classList.add('d-none');
+                    document.getElementById('importStep2').classList.remove('d-none');
+                    document.getElementById('importFooter1').classList.add('d-none');
+                    document.getElementById('importFooter2').classList.remove('d-none');
+                })
+                .catch(() => {
+                    errEl.textContent = 'Failed to read the file. Please try again.';
+                    errEl.classList.remove('d-none');
+                })
+                .finally(() => {
+                    this.disabled = false;
+                    spinner.classList.add('d-none');
+                });
+            });
+
+            document.getElementById('importDiscardBtn').addEventListener('click', resetImportModal);
+
+            document.getElementById('importConfirmBtn').addEventListener('click', function () {
+                const spinner = document.getElementById('importConfirmSpinner');
+                this.disabled = true;
+                spinner.classList.remove('d-none');
+
+                fetch('{{ route('import.confirm') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ names: importedNames }),
+                })
+                .then(res => res.json().then(data => ({ ok: res.ok, data })))
+                .then(({ ok, data }) => {
+                    bootstrap.Modal.getInstance(document.getElementById('importClientModal')).hide();
+                    if (ok) {
+                        Swal.fire({
+                            title: 'Imported!',
+                            text: data.inserted + ' client(s) added successfully.',
+                            icon: 'success',
+                            confirmButtonColor: '#0d6efd'
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Import failed', text: 'Please try again.' });
+                    }
+                })
+                .catch(() => {
+                    Swal.fire({ icon: 'error', title: 'Import failed', text: 'Please try again.' });
+                })
+                .finally(() => {
+                    this.disabled = false;
+                    spinner.classList.add('d-none');
+                });
+            });
+            // ── End Import Client ───────────────────────────────────────
 
             document.getElementById('addRemarkModal').addEventListener('show.bs.modal', function (event) {
                 var trigger = event.relatedTarget;
