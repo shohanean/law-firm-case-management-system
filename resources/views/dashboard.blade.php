@@ -381,6 +381,26 @@
         document.addEventListener('DOMContentLoaded', function () {
             const csrfToken = '{{ csrf_token() }}';
 
+            function updateRowColor(select) {
+                const row = select.closest('tr');
+                const openProject = row.dataset.openProject === '1';
+                const projectType = row.dataset.projectType;
+                const statusName = select.options[select.selectedIndex].dataset.statusName;
+                const colorClasses = ['tr-gray', 'tr-orenge', 'tr-light-blue', 'tr-light-green', 'tr-light-yellow'];
+                colorClasses.forEach(cls => row.classList.remove(cls));
+                if (!openProject) {
+                    row.classList.add('tr-gray');
+                } else if (statusName === 'Assigned to Close') {
+                    row.classList.add('tr-orenge');
+                } else if (projectType === 'Various') {
+                    row.classList.add('tr-light-blue');
+                } else if (projectType.includes('Trademark') || projectType.includes('Copyright')) {
+                    row.classList.add('tr-light-green');
+                } else {
+                    row.classList.add('tr-light-yellow');
+                }
+            }
+
             document.querySelectorAll('.status-select').forEach(function (select) {
                 const originalValue = select.value;
                 select.dataset.original = originalValue;
@@ -404,6 +424,7 @@
                     })
                     .then(function () {
                         select.dataset.original = select.value;
+                        updateRowColor(select);
                         Swal.fire({ toast: true, position: 'top-end', icon: 'success',
                             title: 'Status updated', showConfirmButton: false, timer: 1800 });
                     })

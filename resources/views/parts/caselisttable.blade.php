@@ -38,7 +38,9 @@
                 }
             </style>
             @forelse ($cases as $case)
-            <tr class="
+            <tr data-open-project="{{ $case->open_project ? '1' : '0' }}"
+                data-project-type="{{ $case->projectType->project_type_name ?? '' }}"
+                class="
             @php
                 if(!$case->updated_at){
                     echo '';
@@ -92,6 +94,7 @@
                         data-url="{{ route('case.status.update', $case->id) }}">
                         @foreach ($statuses as $status)
                             <option value="{{ $status->id }}"
+                                data-status-name="{{ $status->status_name }}"
                                 @selected($case->status_id === $status->id)>
                                 {{ $status->status_name }}
                             </option>
