@@ -30,16 +30,21 @@
             @forelse ($cases as $case)
             <tr class="
             @php
-                if(!$case->open_project){
-                    echo 'tr-gray';
+                if(!$case->updated_at){
+                    echo '';
                 }
                 else{
-                    if($case->status){
-                        if($case->status->status_name == 'Assigned to Close'){
-                            echo 'tr-orenge';
-                        }
-                        else{
-                            echo 'bg-info';
+                    if(!$case->open_project){
+                        echo 'tr-gray';
+                    }
+                    else{
+                        if($case->status){
+                            if($case->status->status_name == 'Assigned to Close'){
+                                echo 'tr-orenge';
+                            }
+                            else{
+                                echo 'bg-info';
+                            }
                         }
                     }
                 }
@@ -48,6 +53,9 @@
                 <td class="text-center">{{ $loop->index + 1 }}</td>
                 <td class="text-wrap" style="max-width: 150px;">
                     {{ $case->client_name }}
+                    @if (!$case->updated_at)
+                        <span class="badge bg-success">New</span>
+                    @endif
                 </td>
                 <td class="text-wrap" style="max-width: 150px;">{{ $case->projectType->project_type_name ?? '-' }}</td>
                 <td class="text-wrap" style="max-width: 150px;">
@@ -115,7 +123,7 @@
                 </td>
             </tr>
             @empty
-            <tr><td colspan="8" class="text-center">No open cases found.</td></tr>
+            <tr><td colspan="8" class="text-center text-danger">No cases found</td></tr>
             @endforelse
         </tbody>
     </table>

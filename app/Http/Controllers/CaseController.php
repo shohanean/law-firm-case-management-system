@@ -39,16 +39,20 @@ class CaseController extends Controller
     {
         $validated = $request->validate([
             'client_name' => ['required', 'string', 'max:255'],
-            'open_project' => ['required', 'boolean'],
-            'project_type_id' => ['required', 'exists:project_types,id'],
-            'description' => ['required', 'string'],
-            'status_id' => ['required', 'exists:statuses,id'],
-            'assigned_to' => ['required', 'exists:users,id'],
-            'urgency' => ['required', 'boolean'],
+            'open_project' => ['nullable', 'boolean'],
+            'project_type_id' => ['nullable', 'exists:project_types,id'],
+            'description' => ['nullable', 'string'],
+            'status_id' => ['nullable', 'exists:statuses,id'],
+            'assigned_to' => ['nullable', 'exists:users,id'],
+            'urgency' => ['nullable', 'boolean'],
         ]);
 
-        LegalCase::create($validated + [
+        $legalCase = LegalCase::create($validated + [
             'added_by' => auth()->id(),
+        ]);
+
+        $legalCase->updateQuietly([
+            'updated_at' => null,
         ]);
 
         return redirect()
@@ -74,7 +78,7 @@ class CaseController extends Controller
     public function edit(LegalCase $case)
     {
         $projectTypes = ProjectType::orderBy('project_type_name')->get();
-        $statuses = Status::orderBy('status_name')->get();
+        $statuses = Status::all();
         $users = User::orderBy('name')->get();
 
         return view('case.edit', compact('case', 'projectTypes', 'statuses', 'users'));
@@ -87,12 +91,12 @@ class CaseController extends Controller
     {
         $validated = $request->validate([
             'client_name' => ['required', 'string', 'max:255'],
-            'open_project' => ['required', 'boolean'],
-            'project_type_id' => ['required', 'exists:project_types,id'],
-            'description' => ['required', 'string'],
-            'status_id' => ['required', 'exists:statuses,id'],
-            'assigned_to' => ['required', 'exists:users,id'],
-            'urgency' => ['required', 'boolean'],
+            'open_project' => ['nullable', 'boolean'],
+            'project_type_id' => ['nullable', 'exists:project_types,id'],
+            'description' => ['nullable', 'string'],
+            'status_id' => ['nullable', 'exists:statuses,id'],
+            'assigned_to' => ['nullable', 'exists:users,id'],
+            'urgency' => ['nullable', 'boolean'],
         ]);
 
         $case->update($validated);

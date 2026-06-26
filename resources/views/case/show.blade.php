@@ -99,7 +99,7 @@
                                 </small>
                             </div>
                         </li>
-                        @if($case->updated_at->ne($case->created_at))
+                        @if(isset($case->updated_at))
                         <li class="timeline-item">
                             <div class="timeline-icon bg-warning text-white">
                                 <i class="bi bi-pencil-fill"></i>

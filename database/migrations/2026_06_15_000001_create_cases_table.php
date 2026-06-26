@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('cases', function (Blueprint $table) {
             $table->id();
             $table->string('client_name');
-            $table->boolean('open_project')->default(false);
-            $table->foreignId('project_type_id')->constrained('project_types');
-            $table->longText('description');
-            $table->foreignId('status_id')->constrained('statuses');
-            $table->foreignId('assigned_to')->constrained('users');
-            $table->integer('added_by');
-            $table->boolean('urgency')->default(false);
+            $table->boolean('open_project')->nullable();
+            $table->integer('project_type_id')->nullable();
+            $table->longText('description')->nullable();
+            $table->integer('status_id')->nullable();
+            $table->integer('assigned_to')->nullable();
+            $table->integer('added_by')->nullable();
+            $table->boolean('urgency')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

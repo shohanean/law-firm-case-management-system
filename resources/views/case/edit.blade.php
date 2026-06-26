@@ -57,8 +57,8 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="project_type_id" class="form-label">Project Type</label>
-                                <select name="project_type_id" id="project_type_id"
-                                    class="form-select @error('project_type_id') is-invalid @enderror" required>
+                                <select name="project_type_id" id="project_type_id" class="form-select @error('project_type_id') is-invalid @enderror">
+                                    <option value="">Select Project Type</option>
                                     @foreach ($projectTypes as $projectType)
                                         <option value="{{ $projectType->id }}" @selected((int) old('project_type_id', $case->project_type_id) === $projectType->id)>
                                             {{ $projectType->project_type_name }}
@@ -75,8 +75,9 @@
                             <div class="col-md-4">
                                 <label for="status_id" class="form-label">Status</label>
                                 <select name="status_id" id="status_id"
-                                    class="form-select @error('status_id') is-invalid @enderror" required>
+                                    class="form-select @error('status_id') is-invalid @enderror">
                                     @foreach ($statuses as $status)
+                                        <option value="">Select Status</option>
                                         <option value="{{ $status->id }}" @selected((int) old('status_id', $case->status_id) === $status->id)>
                                             {{ $status->status_name }}
                                         </option>
@@ -89,7 +90,8 @@
                             <div class="col-md-4">
                                 <label for="assigned_to" class="form-label">Assigned To</label>
                                 <select name="assigned_to" id="assigned_to"
-                                    class="form-select @error('assigned_to') is-invalid @enderror" required>
+                                    class="form-select @error('assigned_to') is-invalid @enderror">
+                                    <option value="">Select whom to assign</option>
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}" @selected((int) old('assigned_to', $case->assigned_to) === $user->id)>
                                             {{ $user->name }}
@@ -116,7 +118,7 @@
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
                             <textarea name="description" id="description" rows="4"
-                                class="form-control @error('description') is-invalid @enderror" placeholder="Enter description" required>{{ old('description', $case->description) }}</textarea>
+                                class="form-control @error('description') is-invalid @enderror" placeholder="Enter description">{{ old('description', $case->description) }}</textarea>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
