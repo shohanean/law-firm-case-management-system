@@ -136,7 +136,13 @@ class CaseController extends Controller
     public function destroy(LegalCase $case)
     {
         $case->delete();
+        $previous = url()->previous();
 
+        if (str_contains($previous, '/dashboard')) {
+            return redirect()
+            ->route('dashboard')
+            ->with('delete_success', 'Case deleted successfully.');
+        }
         return redirect()
             ->route('case.index')
             ->with('deleted', 'Case deleted successfully.');
