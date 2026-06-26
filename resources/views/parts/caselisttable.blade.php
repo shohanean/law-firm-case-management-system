@@ -10,6 +10,7 @@
             <tr class="text-center">
                 <th>SL. No.</th>
                 <th>Client Name</th>
+                <th>Open Project?</th>
                 <th>Project Type</th>
                 <th>Description</th>
                 <th>Status</th>
@@ -53,8 +54,13 @@
                 <td class="text-center">{{ $loop->index + 1 }}</td>
                 <td class="text-wrap" style="max-width: 150px;">
                     {{ $case->client_name }}
-                    @if (!$case->updated_at)
-                        <span class="badge bg-success">New</span>
+                </td>
+                @if ($case->updated_at)
+                <td class="text-wrap" style="max-width: 150px;">
+                    @if ($case->open_project)
+                    <i class="bx bx-check-circle"></i> Yes
+                    @else
+                    <i class="bx bx-x"></i> No
                     @endif
                 </td>
                 <td class="text-wrap" style="max-width: 150px;">{{ $case->projectType->project_type_name ?? '-' }}</td>
@@ -81,6 +87,11 @@
                         <span class="badge bg-secondary">Normal</span>
                     @endif
                 </td>
+                @else
+                <td colspan="6" class="text-center">
+                    <span class="badge bg-success">New</span>
+                </td>
+                @endif
                 <td class="text-center">
                     <div class="dropdown">
                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
