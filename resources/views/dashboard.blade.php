@@ -10,22 +10,7 @@
                 <p class="mb-1">Total Cases</p>
                 <h4 class="mb-0 text-pink">{{ $cases->count() }}</h4>
                 </div>
-                <div class="ms-auto widget-icon bg-pink text-white">
-                <i class="bi bi-folder-fill"></i>
-                </div>
-            </div>
-            </div>
-        </div>
-        </div>
-        <div class="col">
-        <div class="card radius-10 border-0 border-start border-danger border-3">
-            <div class="card-body">
-            <div class="d-flex align-items-center">
-                <div class="">
-                <p class="mb-1">Urgent Cases</p>
-                <h4 class="mb-0 text-danger">{{ $cases->where('urgency', true)->count() }}</h4>
-                </div>
-                <div class="ms-auto widget-icon bg-danger text-white">
+                <div class="ms-auto widget-icon bg-pink text-white" style="cursor: default;">
                 <i class="bi bi-folder-fill"></i>
                 </div>
             </div>
@@ -40,27 +25,12 @@
                     <p class="mb-1">Total Project Types</p>
                     <h4 class="mb-0 text-tiffany">{{ $projectTypes->count() }}</h4>
                 </div>
-                <div class="ms-auto widget-icon bg-tiffany text-white">
+                <div class="ms-auto widget-icon bg-tiffany text-white" style="cursor: default;">
                     <i class="bi bi-briefcase-fill"></i>
                 </div>
                 </div>
             </div>
             </div>
-        </div>
-        <div class="col">
-        <div class="card radius-10 border-0 border-start border-success border-3">
-            <div class="card-body">
-            <div class="d-flex align-items-center">
-                <div class="">
-                <p class="mb-1">Total Statuses</p>
-                <h4 class="mb-0 text-success">{{ $statuses->count() }}</h4>
-                </div>
-                <div class="ms-auto widget-icon bg-success text-white">
-                <i class="bi bi-check2-circle"></i>
-                </div>
-            </div>
-            </div>
-        </div>
         </div>
         <div class="col">
         <div class="card radius-10 border-0 border-start border-orange border-3">
@@ -70,8 +40,23 @@
                 <p class="mb-1">Total Active Users</p>
                 <h4 class="mb-0 text-orange">{{ $users->count() }}</h4>
                 </div>
-                <div class="ms-auto widget-icon bg-orange text-white">
+                <div class="ms-auto widget-icon bg-orange text-white" style="cursor: default;">
                 <i class="bi bi-person-plus-fill"></i>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+        <div class="col">
+        <div class="card radius-10 border-0 border-start border-danger border-3">
+            <div class="card-body">
+            <div class="d-flex align-items-center">
+                <div class="">
+                <p class="mb-1">Urgent Cases</p>
+                <h4 class="mb-0 text-danger">{{ $cases->where('urgency', true)->count() }}</h4>
+                </div>
+                <div class="ms-auto widget-icon bg-danger text-white" style="cursor: default;">
+                <i class="bx bx-calendar-exclamation"></i>
                 </div>
             </div>
             </div>
@@ -84,7 +69,11 @@
             <div class="card radius-10 w-100">
                 <div class="card-header">
                     <div class="d-flex align-items-center justify-content-between">
-                        <h6 class="mb-0">All Cases</h6>
+                        <div class="d-flex align-items-center gap-2">
+                            <h6 class="mb-0">All Cases</h6>
+                            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#staticTableModal">How color works
+                            </button>
+                        </div>
                         <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#importClientModal">
                             <i class="bx bx-import"></i>
                             Import Clients from Excel
@@ -92,33 +81,73 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <h6>Filters:</h6>
-                    <div class="row">
-                        <div class="col-2">
-                            <form action="{{ route('dashboard') }}" method="GET">
-                                <select class="form-select" name="sort" onchange="this.form.submit()">
-                                    <option @if(isset($_GET['sort']) && $_GET['sort'] === 'az') selected @endif value="az">Sort By: Client Name (A-Z)</option>
-                                    <option @if(isset($_GET['sort']) && $_GET['sort'] === 'za') selected @endif value="za">Sort By: Client Name (Z-A)</option>
+                    <form action="{{ route('dashboard') }}" method="GET" id="filterForm">
+                        <div class="row g-2 align-items-end mb-3">
+                            <div class="col-auto">
+                                <label class="form-label small mb-1">Sort</label>
+                                <select class="form-select form-select-sm" name="sort" onchange="this.form.submit()">
+                                    <option value="az" @selected(request('sort', 'az') === 'az')>Name A–Z</option>
+                                    <option value="za" @selected(request('sort') === 'za')>Name Z–A</option>
                                 </select>
-                            </form>
-                        </div>
-                        <div class="col-2">
-                            <form action="{{ route('dashboard') }}" method="GET">
-                                <select class="form-select" name="sort" onchange="this.form.submit()">
-                                    <option @if(isset($_GET['sort']) && $_GET['sort'] === 'az') selected @endif value="az">Sort By: Client Name (A-Z)</option>
-                                    <option @if(isset($_GET['sort']) && $_GET['sort'] === 'za') selected @endif value="za">Sort By: Client Name (Z-A)</option>
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label small mb-1">Open Project?</label>
+                                <select class="form-select form-select-sm" name="open_project" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <option value="1" @selected(request('open_project') === '1')>Yes</option>
+                                    <option value="0" @selected(request('open_project') === '0')>No</option>
                                 </select>
-                            </form>
-                        </div>
-                        <div class="col-2">
-                            <form action="{{ route('dashboard') }}" method="GET">
-                                <select class="form-select" name="sort" onchange="this.form.submit()">
-                                    <option @if(isset($_GET['sort']) && $_GET['sort'] === 'az') selected @endif value="az">Sort By: Client Name (A-Z)</option>
-                                    <option @if(isset($_GET['sort']) && $_GET['sort'] === 'za') selected @endif value="za">Sort By: Client Name (Z-A)</option>
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label small mb-1">Project Type</label>
+                                <select class="form-select form-select-sm" name="project_type_id" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    @foreach ($projectTypes as $pt)
+                                        <option value="{{ $pt->id }}" @selected(request('project_type_id') == $pt->id)>
+                                            {{ $pt->project_type_name }}
+                                        </option>
+                                    @endforeach
                                 </select>
-                            </form>
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label small mb-1">Status</label>
+                                <select class="form-select form-select-sm" name="status_id" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    @foreach ($statuses as $st)
+                                        <option value="{{ $st->id }}" @selected(request('status_id') == $st->id)>
+                                            {{ $st->status_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label small mb-1">Urgency</label>
+                                <select class="form-select form-select-sm" name="urgency" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <option value="1" @selected(request('urgency') === '1')>Urgent</option>
+                                    <option value="0" @selected(request('urgency') === '0')>Normal</option>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label small mb-1">Assigned To</label>
+                                <select class="form-select form-select-sm" name="assigned_to" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    @foreach ($users as $u)
+                                        <option value="{{ $u->id }}" @selected(request('assigned_to') == $u->id)>
+                                            {{ $u->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @if(request()->hasAny(['open_project', 'project_type_id', 'status_id', 'urgency', 'assigned_to']) || request('sort') === 'za')
+                                <div class="col-auto">
+                                    <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-x-circle me-1"></i>Clear
+                                    </a>
+                                </div>
+                            @endif
                         </div>
-                    </div>
+                    </form>
 
                     @include('parts.caselisttable')
                 </div>
@@ -147,6 +176,49 @@
             </div>
         </div>
     </div>
+    {{-- Static Table Modal --}}
+    <div class="modal fade" id="staticTableModal" tabindex="-1" aria-labelledby="staticTableModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticTableModalLabel">How color works</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm">
+                            <tbody>
+                                <tr>
+                                    <td style="background-color:#D9D9D9">Gray</td>
+                                    <td>No Open Project</td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color:#FCE4D6">Orenge</td>
+                                    <td>When status is "Assigned to Close"</td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color:#DDEBF7">Light Blue</td>
+                                    <td>When project type is "Various"</td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color:#E2F0D9">Light Green</td>
+                                    <td>When project type is Intellectual Property (Trademarks, Copyrights)</td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color:#FFFFCC">Light Yellow</td>
+                                    <td>When project type is any other option</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Import Client Modal --}}
     <div class="modal fade" id="importClientModal" tabindex="-1" aria-labelledby="importClientModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
