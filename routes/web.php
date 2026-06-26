@@ -17,6 +17,7 @@ Route::get('/', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+    Route::get('/your-assignments', [HomeController::class, 'yourAssignments'])->name('your.assignments');
     Route::resource('projecttype', ProjectTypeController::class);
     Route::resource('case-status', StatusController::class)->names('status');
     Route::resource('user', UserController::class)->except(['show', 'create']);

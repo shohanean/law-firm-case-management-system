@@ -155,6 +155,13 @@
               </a>
             </li>
             <li>
+              <a href="{{ route('your.assignments') }}">
+                <div class="parent-icon"><i class="bx bx-task"></i>
+                </div>
+                <div class="menu-title">Your Assignments</div>
+              </a>
+            </li>
+            <li>
               <a href="{{ route('case.index') }}">
                 <div class="parent-icon"><i class="bi bi-folder-fill"></i>
                 </div>
