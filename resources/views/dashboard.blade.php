@@ -1,14 +1,14 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 row-cols-xxl-4">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-3 row-cols-xxl-3">
         <div class="col">
         <div class="card radius-10 border-0 border-start border-pink border-3">
             <div class="card-body">
             <div class="d-flex align-items-center">
                 <div class="">
-                <p class="mb-1">Total Cases</p>
-                <h4 class="mb-0 text-pink">{{ $cases->count() }}</h4>
+                <p class="mb-1">Total Open Projects</p>
+                <h4 class="mb-0 text-pink">{{ $cases->where('open_project', true)->count() }}</h4>
                 </div>
                 <div class="ms-auto widget-icon bg-pink text-white" style="cursor: default;">
                 <i class="bi bi-folder-fill"></i>
@@ -22,8 +22,8 @@
             <div class="card-body">
                 <div class="d-flex align-items-center">
                 <div class="">
-                    <p class="mb-1">Total Project Types</p>
-                    <h4 class="mb-0 text-tiffany">{{ $projectTypes->count() }}</h4>
+                    <p class="mb-1">Total Timely Projects</p>
+                    <h4 class="mb-0 text-tiffany">{{ $cases->where('open_project', true)->where('urgency', false)->count() }}</h4>
                 </div>
                 <div class="ms-auto widget-icon bg-tiffany text-white" style="cursor: default;">
                     <i class="bi bi-briefcase-fill"></i>
@@ -31,21 +31,6 @@
                 </div>
             </div>
             </div>
-        </div>
-        <div class="col">
-        <div class="card radius-10 border-0 border-start border-orange border-3">
-            <div class="card-body">
-            <div class="d-flex align-items-center">
-                <div class="">
-                <p class="mb-1">Total Active Users</p>
-                <h4 class="mb-0 text-orange">{{ $users->count() }}</h4>
-                </div>
-                <div class="ms-auto widget-icon bg-orange text-white" style="cursor: default;">
-                <i class="bi bi-person-plus-fill"></i>
-                </div>
-            </div>
-            </div>
-        </div>
         </div>
         <div class="col">
         <div class="card radius-10 border-0 border-start border-danger border-3">
