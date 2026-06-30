@@ -162,6 +162,20 @@
               </a>
             </li>
             <li>
+              <a href="{{ route('tasks.my') }}">
+                <div class="parent-icon"><i class="bi bi-check2-square"></i>
+                </div>
+                <div class="menu-title">My Tasks</div>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('tasks.index') }}">
+                <div class="parent-icon"><i class="bi bi-people-fill"></i>
+                </div>
+                <div class="menu-title">Task Management</div>
+              </a>
+            </li>
+            <li>
               <a href="{{ route('case.index') }}">
                 <div class="parent-icon"><i class="bi bi-folder-fill"></i>
                 </div>
